@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>FlexSched Premium Fitness Planner</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif']
+          },
+          colors: {
+            slate: {
+              925: '#020617'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    .glass { background: rgba(15, 23, 42, 0.72); backdrop-filter: blur(16px); }
+    .soft-ring { box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.12), 0 16px 40px rgba(2, 6, 23, 0.28); }
+    .card-hover { transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 18px 40px rgba(59, 130, 246, 0.16); }
+    .metric-pill { border: 1px solid rgba(148, 163, 184, 0.22); background: rgba(2, 6, 23, 0.86); }
+    .custom-scroll::-webkit-scrollbar { width: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.8); }
+    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.45); border-radius: 999px; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-blue-500 selection:text-white">
+  <header class="sticky top-0 z-40 border-b border-slate-800/80 bg-slate-950/85 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 via-cyan-500 to-indigo-500 text-xl font-black shadow-lg shadow-blue-500/20">⚡</div>
+        <div>
+          <h1 class="text-lg font-black tracking-tight text-white sm:text-xl">FlexSched Premium</h1>
+          <p class="hidden text-xs text-slate-400 sm:block">Adaptive training planner with smart logging, analytics, recovery, and coaching tools.</p>
+        </div>
+      </div>
+      <div class="rounded-2xl border border-blue-500/20 bg-blue-500/10 px-3 py-2 text-xs font-semibold text-blue-300">Live local planner · Auto-saves</div>
+    </div>
+  </header>
+
+  <main class="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+    <section class="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+      <div class="glass soft-ring rounded-[28px] border border-slate-800/90 p-5 sm:p-7">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.32em] text-blue-400">Performance Dashboard</p>
+            <h2 class="mt-2 text-2xl font-black text-white sm:text-3xl">Your premium fitness operating system.</h2>
+            <p class="mt-2 max-w-2xl text-sm text-slate-400">Build a split, load your sessions, track recovery, calculate nutrition, and review weekly progress from one place.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-700/80 bg-slate-900/70 px-3 py-2 text-sm font-semibold text-slate-300">
+            <span id="hero-status" class="text-blue-300">Ready to train</span>
+          </div>
+        </div>
+
+        <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+            <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400">Current split</p>
+            <p id="hero-split" class="mt-2 text-lg font-black text-white">Full Body</p>
+          </div>
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+            <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400">Training days</p>
+            <p id="hero-days" class="mt-2 text-lg font-black text-white">3 Days</p>
+          </div>
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+            <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400">Recovery</p>
+            <p id="hero-recovery" class="mt-2 text-lg font-black text-white">84%</p>
+          </div>
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+            <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400">Volume</p>
+            <p id="hero-volume" class="mt-2 text-lg font-black text-white">0 lb</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass soft-ring rounded-[28px] border border-slate-800/90 p-5 sm:p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.32em] text-emerald-400">Today</p>
+            <h3 class="mt-1 text-xl font-black text-white">Today’s workout</h3>
+          </div>
+          <div class="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">On track</div>
+        </div>
+        <div id="today-card" class="mt-4 space-y-3"></div>
+      </div>
+    </section>
+
+    <section class="rounded-[28px] border border-slate-800/90 bg-slate-900/60 p-4 sm:p-6">
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Executive Summary</p>
+          <h3 class="mt-1 text-xl font-black text-white">Dashboard intelligence</h3>
+        </div>
+        <div class="rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1 text-xs font-semibold text-slate-400">Smooth animated cards</div>
+      </div>
+      <div id="dashboard-grid" class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4"></div>
+    </section>
+
+    <section class="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+      <div class="glass soft-ring rounded-[28px] border border-slate-800/90 p-4 sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.32em] text-blue-400">Adaptive Plan Builder</p>
+            <h3 class="mt-1 text-xl font-black text-white">Choose your weekly split</h3>
+          </div>
+          <div class="rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1 text-xs font-semibold text-slate-400">Local storage ready</div>
+        </div>
+        <div class="mt-5 grid gap-3 lg:grid-cols-[1fr_0.9fr]">
+          <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+            <label class="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Training days</label>
+            <div id="day-selector" class="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4"></div>
+          </div>
+          <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+            <label class="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Split logic</label>
+            <select id="split-selector" class="mt-3 w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-sm font-semibold text-slate-200 focus:border-blue-500 focus:outline-none"></select>
+            <div id="split-summary" class="mt-3 rounded-2xl border border-blue-500/20 bg-blue-500/10 p-3 text-sm text-blue-200"></div>
+          </div>
+        </div>
+        <div id="plan-grid" class="mt-6 grid gap-3 md:grid-cols-2"></div>
+      </div>
+
+      <div class="glass soft-ring rounded-[28px] border border-slate-800/90 p-4 sm:p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.32em] text-emerald-400">Workout Logger</p>
+            <h3 class="mt-1 text-xl font-black text-white">Track each set like a pro</h3>
+          </div>
+          <div class="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">Auto-saved</div>
+        </div>
+        <div id="log-panel" class="mt-4 space-y-3"></div>
+      </div>
+    </section>
+
+    <section class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+      <div class="glass soft-ring rounded-[28px] border border-slate-800/90 p-4 sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.32em] text-violet-400">Exercise Library</p>
+            <h3 class="mt-1 text-xl font-black text-white">Search, filter, and favorite movement patterns</h3>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="favorite-toggle" type="button" data-active="false" class="rounded-full border border-slate-700 bg-slate-950/70 px-3 py-2 text-sm font-semibold text-slate-400">Favorites only</button>
+            <div class="rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1 text-xs font-semibold text-slate-400">96 exercises</div>
+          </div>
+        </div>
+
+        <div class="mt-5 grid gap-3 lg:grid-cols-[1fr_0.8fr]">
+          <input id="exercise-search" type="search" placeholder="Search exercise, muscle, or movement" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-slate-200 focus:border-blue-500 focus:outline-none" />
+          <div class="grid gap-2 sm:grid-cols-3">
+            <select id="filter-muscle" class="rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-sm text-slate-200 focus:border-blue-500 focus:outline-none"></select>
+            <select id="filter-equipment" class="rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-sm text-slate-200 focus:border-blue-500 focus:outline-none"></select>
+            <select id="filter-difficulty" class="rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-sm text-slate-200 focus:border-blue-500 focus:outline-none"></select>
+          </div>
+        </div>
+        <div id="exercise-library" class="mt-5 grid gap-3"></div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="glass soft-ring rounded-[28px] border border-slate-800/90 p-4 sm:p-6">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.32em] text-cyan-400">Weekly Analytics</p>
+              <h3 class="mt-1 text-xl font-black text-white">Volume and trend overview</h3>
+            </div>
+            <div class="rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1 text-xs font-semibold text-slate-400">SVG only</div>
+          </div>
+          <div id="analytics-panel" class="mt-5 space-y-4"></div>
+          <div id="progression-panel" class="mt-4"></div>
+        </div>
+
+        <div class="glass soft-ring rounded-[28px] border border-slate-800/90 p-4 sm:p-6">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.32em] text-amber-400">Recovery System</p>
+              <h3 class="mt-1 text-xl font-black text-white">Sleep, hydration, and next steps</h3>
+            </div>
+            <div class="rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1 text-xs font-semibold text-slate-400">Adaptive</div>
+          </div>
+          <div id="recovery-panel" class="mt-5 space-y-4"></div>
+          <div id="muscle-map-panel" class="mt-4"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid gap-6 xl:grid-cols-[1fr_1fr]">
+      <div class="glass soft-ring rounded-[28px] border border-slate-800/90 p-4 sm:p-6">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.32em] text-rose-400">Nutrition Dashboard</p>
+            <h3 class="mt-1 text-xl font-black text-white">Protein, calorie, and macro planning</h3>
+          </div>
+          <div class="rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1 text-xs font-semibold text-slate-400">Three modes</div>
+        </div>
+        <div id="nutrition-panel" class="mt-5 space-y-4"></div>
+      </div>
+
+      <div class="glass soft-ring rounded-[28px] border border-slate-800/90 p-4 sm:p-6">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.32em] text-emerald-400">Tools & Calculators</p>
+            <h3 class="mt-1 text-xl font-black text-white">Timers, plates, and strength estimates</h3>
+          </div>
+          <div class="rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1 text-xs font-semibold text-slate-400">All in one</div>
+        </div>
+        <div id="tools-panel" class="mt-5 space-y-4"></div>
+      </div>
+    </section>
+
+    <section class="grid gap-6 xl:grid-cols-[1fr_1fr]">
+      <div class="glass soft-ring rounded-[28px] border border-slate-800/90 p-4 sm:p-6">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.32em] text-fuchsia-400">Personal Records</p>
+            <h3 class="mt-1 text-xl font-black text-white">Keep your best lifts visible</h3>
+          </div>
+          <div class="rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1 text-xs font-semibold text-slate-400">Persistent</div>
+        </div>
+        <div id="records-panel" class="mt-5 space-y-3"></div>
+      </div>
+
+      <div class="glass soft-ring rounded-[28px] border border-slate-800/90 p-4 sm:p-6">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.32em] text-blue-400">Settings</p>
+            <h3 class="mt-1 text-xl font-black text-white">Theme, units, timers, import, and export</h3>
+          </div>
+          <div class="rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1 text-xs font-semibold text-slate-400">Control center</div>
+        </div>
+        <div id="settings-panel" class="mt-5 space-y-4"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="exercise-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-950/80 p-3 backdrop-blur-md sm:p-4">
+    <div class="custom-scroll flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-[28px] border border-slate-800 bg-slate-900 shadow-2xl">
+      <div class="border-b border-slate-800 bg-slate-950/70 px-4 py-4 sm:px-6">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p id="modal-category" class="text-[11px] font-semibold uppercase tracking-[0.3em] text-blue-400"></p>
+            <h3 id="modal-title" class="mt-1 text-xl font-black text-white"></h3>
+          </div>
+          <button id="modal-close" class="rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm font-semibold text-slate-300">Close</button>
+        </div>
+      </div>
+      <div class="overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
+        <div class="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+            <div id="modal-illustration" class="rounded-2xl border border-slate-800 bg-slate-900/80 p-3"></div>
+            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+              <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-3">
+                <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400">Recommended sets</p>
+                <p id="modal-sets" class="mt-1 font-black text-white"></p>
+              </div>
+              <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-3">
+                <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400">Rest interval</p>
+                <p id="modal-rest" class="mt-1 font-black text-white"></p>
+              </div>
+            </div>
+            <div class="mt-4 rounded-2xl border border-slate-800 bg-slate-900/70 p-3">
+              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Tempo</p>
+              <p id="modal-tempo" class="mt-1 text-sm text-slate-300"></p>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+              <h4 class="text-sm font-black uppercase tracking-[0.3em] text-slate-400">Muscles worked</h4>
+              <div id="modal-muscles" class="mt-3 flex flex-wrap gap-2"></div>
+            </div>
+            <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+              <h4 class="text-sm font-black uppercase tracking-[0.3em] text-slate-400">Execution steps</h4>
+              <ol id="modal-steps" class="mt-3 space-y-2 text-sm text-slate-300"></ol>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 grid gap-4 lg:grid-cols-2">
+          <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+            <h4 class="text-sm font-black uppercase tracking-[0.3em] text-slate-400">Breathing + cues</h4>
+            <p id="modal-cues" class="mt-2 text-sm text-slate-300"></p>
+          </div>
+          <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+            <h4 class="text-sm font-black uppercase tracking-[0.3em] text-slate-400">Common mistakes</h4>
+            <p id="modal-mistake" class="mt-2 text-sm text-slate-300"></p>
+          </div>
+        </div>
+        <div class="mt-4 grid gap-4 lg:grid-cols-2">
+          <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+            <h4 class="text-sm font-black uppercase tracking-[0.3em] text-slate-400">Safety tips</h4>
+            <p id="modal-safety" class="mt-2 text-sm text-slate-300"></p>
+          </div>
+          <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+            <h4 class="text-sm font-black uppercase tracking-[0.3em] text-slate-400">Progression advice</h4>
+            <p id="modal-progression" class="mt-2 text-sm text-slate-300"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'flexsched-premium-state-v1';
+    const dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const dayLabels = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday' };
+    const defaultState = {
+      selectedDays: ['Mon', 'Wed', 'Fri'],
+      splitType: 'fullBody',
+      settings: {
+        theme: 'dark',
+        units: 'lb',
+        restTimerDefault: 60,
+        workoutDuration: 60,
+        animations: true,
+        sound: true
+      },
+      favorites: [],
+      nutrition: {
+        goal: 'bulking',
+        weight: 180,
+        height: 70,
+        age: 30,
+        sex: 'male',
+        protein: 0,
+        calories: 0,
+        macros: { protein: 180, carbs: 220, fats: 70 },
+        water: 0,
+        sleep: 7.5
+      },
+      logs: {},
+      prs: { bench: 225, squat: 315, deadlift: 405, ohp: 155, rows: 225, pullUps: 12 },
+      completedWorkouts: [],
+      recovery: {
+        restDays: 4,
+        recoveryPercent: 84,
+        sleepTarget: 8,
+        hydration: 78,
+        fatigue: 3,
+        musclesRecovering: ['Lower Back', 'Shoulders'],
+        nextRecommendation: 'Keep volume moderate and finish with a short mobility circuit.'
+      },
+      timer: {
+        restSeconds: 60,
+        workoutSeconds: 0,
+        running: false,
+        mode: 'rest'
+      }
+    };
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return parsed ? mergeState(parsed) : structuredClone(defaultState);
+      } catch (error) {
+        return structuredClone(defaultState);
+      }
+    }
+
+    function mergeState(parsed) {
+      return {
+        ...structuredClone(defaultState),
+        ...parsed,
+        settings: { ...defaultState.settings, ...(parsed.settings || {}) },
+        nutrition: { ...defaultState.nutrition, ...(parsed.nutrition || {}), macros: { ...defaultState.nutrition.macros, ...(parsed.nutrition?.macros || {}) } },
+        recovery: { ...defaultState.recovery, ...(parsed.recovery || {}) },
+        prs: { ...defaultState.prs, ...(parsed.prs || {}) },
+        timer: { ...defaultState.timer, ...(parsed.timer || {}) },
+        logs: parsed.logs || {},
+        favorites: parsed.favorites || []
+      };
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    const svgIllustrations = {
+      squat: `<svg width="240" height="150" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="12" y="122" width="216" height="10" rx="4" fill="#334155" />
+        <circle cx="120" cy="34" r="14" fill="#64748b" />
+        <line x1="120" y1="48" x2="120" y2="90" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <line x1="120" y1="90" x2="96" y2="116" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <line x1="120" y1="90" x2="144" y2="116" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <rect x="70" y="40" width="100" height="12" rx="4" fill="#1e293b" />
+        <path d="M72 46H164" stroke="#3b82f6" stroke-width="6" stroke-linecap="round" />
+        <path d="M90 88L78 110" stroke="#3b82f6" stroke-width="8" stroke-linecap="round" />
+        <path d="M150 88L162 110" stroke="#3b82f6" stroke-width="8" stroke-linecap="round" />
+      </svg>`,
+      press: `<svg width="240" height="150" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="38" y="108" width="164" height="10" rx="4" fill="#334155" />
+        <circle cx="120" cy="60" r="16" fill="#64748b" />
+        <path d="M92 72L96 98" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <path d="M148 72L144 98" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <path d="M84 60H156" stroke="#3b82f6" stroke-width="8" stroke-linecap="round" />
+        <line x1="62" y1="46" x2="178" y2="46" stroke="#e2e8f0" stroke-width="6" stroke-linecap="round" />
+        <rect x="56" y="38" width="10" height="16" rx="2" fill="#3b82f6" />
+        <rect x="174" y="38" width="10" height="16" rx="2" fill="#3b82f6" />
+      </svg>`,
+      pull: `<svg width="240" height="150" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="42" y="28" width="156" height="10" rx="4" fill="#334155" />
+        <circle cx="120" cy="54" r="12" fill="#64748b" />
+        <path d="M88 72L112 96" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <path d="M152 72L128 96" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <line x1="70" y1="42" x2="170" y2="42" stroke="#e2e8f0" stroke-width="6" stroke-linecap="round" />
+        <path d="M82 42C98 48 104 70 112 96" stroke="#3b82f6" stroke-width="8" stroke-linecap="round" />
+        <path d="M158 42C142 48 136 70 128 96" stroke="#3b82f6" stroke-width="8" stroke-linecap="round" />
+      </svg>`,
+      hinge: `<svg width="240" height="150" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="18" y="122" width="204" height="10" rx="4" fill="#334155" />
+        <circle cx="96" cy="66" r="12" fill="#64748b" />
+        <line x1="96" y1="78" x2="96" y2="112" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <line x1="96" y1="112" x2="84" y2="124" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <path d="M96 78L132 78" stroke="#3b82f6" stroke-width="8" stroke-linecap="round" />
+        <rect x="128" y="76" width="28" height="12" rx="3" fill="#3b82f6" />
+      </svg>`,
+      overhead: `<svg width="240" height="150" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="120" cy="42" r="14" fill="#64748b" />
+        <line x1="120" y1="56" x2="120" y2="100" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <line x1="90" y1="46" x2="54" y2="22" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <line x1="150" y1="46" x2="186" y2="22" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <line x1="54" y1="20" x2="186" y2="20" stroke="#e2e8f0" stroke-width="6" stroke-linecap="round" />
+        <circle cx="94" cy="50" r="10" fill="#3b82f6" />
+        <circle cx="146" cy="50" r="10" fill="#3b82f6" />
+      </svg>`,
+      arms: `<svg width="240" height="150" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="118" cy="44" r="12" fill="#64748b" />
+        <line x1="118" y1="56" x2="118" y2="98" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <path d="M118 98L142 86" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <ellipse cx="126" cy="78" rx="10" ry="16" transform="rotate(-16 126 78)" fill="#3b82f6" />
+        <rect x="138" y="68" width="28" height="12" rx="3" fill="#e2e8f0" />
+        <path d="M146 102C156 92 162 84 170 74" stroke="#10b981" stroke-width="6" stroke-linecap="round" />
+      </svg>`,
+      core: `<svg width="240" height="150" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="122" width="200" height="10" rx="4" fill="#334155" />
+        <path d="M72 94H168" stroke="#94a3b8" stroke-width="10" stroke-linecap="round" />
+        <rect x="88" y="82" width="64" height="16" rx="6" fill="#3b82f6" />
+        <circle cx="168" cy="94" r="10" fill="#64748b" />
+      </svg>`,
+      cardio: `<svg width="240" height="150" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="118" cy="76" r="36" fill="#0f172a" />
+        <path d="M92 82H102L108 66L118 92L126 78H148" stroke="#3b82f6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M58 76H34" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" />
+        <path d="M182 76H206" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" />
+      </svg>`,
+      mobility: `<svg width="240" height="150" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="120" cy="56" r="14" fill="#64748b" />
+        <path d="M112 70L100 92" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <path d="M128 70L140 92" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
+        <path d="M94 94C105 82 135 82 146 94" stroke="#3b82f6" stroke-width="8" stroke-linecap="round" />
+      </svg>`
+    };
+
+    function createExercise(def) {
+      return {
+        name: def.name,
+        primary: def.primary,
+        secondary: def.secondary,
+        equipment: def.equipment,
+        difficulty: def.difficulty,
+        movement: def.movement,
+        sets: def.sets,
+        reps: def.reps,
+        rest: def.rest,
+        tempo: def.tempo,
+        instructions: def.instructions,
+        mistakes: def.mistakes,
+        safetyTips: def.safetyTips,
+        alternatives: def.alternatives,
+        progression: def.progression,
+        svgKey: def.svgKey,
+        videoPlaceholder: `${def.name} demo`
+      };
+    }
+
+    function buildExerciseLibrary() {
+      const templates = [
+        { name: 'Bench Press', primary: ['Chest'], secondary: ['Triceps', 'Front Delts'], movement: 'Horizontal Push', difficulty: 'Intermediate', svgKey: 'press', instructions: 'Set your feet, brace your core, and drive the bar to the upper chest while keeping elbows at a slight angle.', mistakes: 'Flared elbows and bouncing the bar off your chest.', safetyTips: 'Use a spotter and avoid over-arching the lower back.', alternatives: ['Incline Press', 'Machine Chest Press'], progression: 'Add 2.5–5 lb when you hit all reps with full control.', sets: '4 Sets', reps: '6–8 Reps', rest: '120s', tempo: '3-1-1' },
+        { name: 'Incline Press', primary: ['Upper Chest'], secondary: ['Front Delts', 'Triceps'], movement: 'Horizontal Push', difficulty: 'Intermediate', svgKey: 'press', instructions: 'Set the bench to a 30-degree incline, lower under control and press through the floor.', mistakes: 'Too steep an angle or excessive shoulder shrugging.', safetyTips: 'Keep shoulder blades pinned and wrists stacked over elbows.', alternatives: ['Dumbbell Press', 'Cable Press'], progression: 'Pause at the bottom for 1 second before driving up.', sets: '3 Sets', reps: '8–10 Reps', rest: '90s', tempo: '2-1-1' },
+        { name: 'Chest Fly', primary: ['Chest'], secondary: ['Shoulders'], movement: 'Adduction', difficulty: 'Beginner', svgKey: 'press', instructions: 'Open the arms wide, squeeze the pecs, and return without locking your elbows.', mistakes: 'Rolling the shoulders or over-stretching the joint.', safetyTips: 'Keep a soft bend in the elbows and avoid forcing the range.', alternatives: ['Cable Press', 'Machine Fly'], progression: 'Use a slight pause at peak contraction to intensify the stimulus.', sets: '3 Sets', reps: '12–15 Reps', rest: '60s', tempo: '2-1-2' },
+        { name: 'Push-Up', primary: ['Chest'], secondary: ['Triceps', 'Core'], movement: 'Horizontal Push', difficulty: 'Beginner', svgKey: 'press', instructions: 'Brace the torso, lower until chest nearly touches the floor, then press up.', mistakes: 'Sagging hips and flaring elbows.', safetyTips: 'Use a bench if full reps are too challenging.', alternatives: ['Dumbbell Floor Press', 'Machine Press'], progression: 'Add tempo or elevate the feet for harder reps.', sets: '3 Sets', reps: 'AMRAP', rest: '45s', tempo: '3-1-1' },
+        { name: 'Overhead Press', primary: ['Shoulders'], secondary: ['Triceps', 'Upper Chest'], movement: 'Vertical Push', difficulty: 'Intermediate', svgKey: 'overhead', instructions: 'Press the load directly overhead while keeping ribs down and core braced.', mistakes: 'Leaning back and shrugging at the top.', safetyTips: 'Keep wrists neutral and avoid locking out hard.', alternatives: ['Arnold Press', 'Machine Shoulder Press'], progression: 'Add 5 lb once you can finish all sets with good tempo.', sets: '4 Sets', reps: '6–8 Reps', rest: '90s', tempo: '3-1-1' },
+        { name: 'Lateral Raise', primary: ['Side Delts'], secondary: ['Upper Traps'], movement: 'Abduction', difficulty: 'Beginner', svgKey: 'overhead', instructions: 'Lift the weights out to shoulder height and pause briefly before lowering.', mistakes: 'Swinging the body and shrugging.', safetyTips: 'Use a light load and focus on the lift.', alternatives: ['Cable Raise', 'Front Raise'], progression: 'Use a slow eccentric for more tension.', sets: '3 Sets', reps: '12–15 Reps', rest: '45s', tempo: '2-1-3' },
+        { name: 'Rear Delt Fly', primary: ['Rear Delts'], secondary: ['Upper Back'], movement: 'Horizontal Abduction', difficulty: 'Beginner', svgKey: 'overhead', instructions: 'Open the arms gently and squeeze the upper back at the top.', mistakes: 'Rolling the shoulders or using too much weight.', safetyTips: 'Keep the neck relaxed and the chest proud.', alternatives: ['Face Pull', 'Cable Reverse Fly'], progression: 'Keep the rep count strict and stop before the shoulder takes over.', sets: '3 Sets', reps: '12–15 Reps', rest: '60s', tempo: '2-1-2' },
+        { name: 'Face Pull', primary: ['Rear Delts'], secondary: ['Rotator Cuff', 'Upper Back'], movement: 'Scapular Retraction', difficulty: 'Beginner', svgKey: 'pull', instructions: 'Pull the rope toward the forehead while keeping elbows high and out.', mistakes: 'Dropping the elbows and shrugging.', safetyTips: 'Keep the neck long and the movement smooth.', alternatives: ['Reverse Pec Deck', 'Wide Pull-Apart'], progression: 'Increase the pause at the chest height.', sets: '3 Sets', reps: '12–15 Reps', rest: '45s', tempo: '2-1-2' },
+        { name: 'Row', primary: ['Mid Back'], secondary: ['Lats', 'Biceps'], movement: 'Horizontal Pull', difficulty: 'Intermediate', svgKey: 'pull', instructions: 'Pull the handle toward the lower ribs while keeping the torso stable.', mistakes: 'Yanking and rounding the upper back.', safetyTips: 'Lead with the elbows and keep the chest proud.', alternatives: ['Chest-Supported Row', 'Seal Row'], progression: 'Use a two-second pause at full contraction.', sets: '4 Sets', reps: '8–10 Reps', rest: '90s', tempo: '2-1-2' },
+        { name: 'Chest-Supported Row', primary: ['Upper Back'], secondary: ['Rear Delts', 'Lats'], movement: 'Horizontal Pull', difficulty: 'Intermediate', svgKey: 'pull', instructions: 'Set the chest support and row with the elbows tucked.', mistakes: 'Using momentum or sliding on the pad.', safetyTips: 'Keep the core braced and avoid hyperextending the lower back.', alternatives: ['Seated Row', 'One-Arm Cable Row'], progression: 'Progress by adding a 1-second pause right before the row.', sets: '3 Sets', reps: '10–12 Reps', rest: '75s', tempo: '2-1-2' },
+        { name: 'Pull-Up', primary: ['Lats'], secondary: ['Biceps', 'Upper Back'], movement: 'Vertical Pull', difficulty: 'Intermediate', svgKey: 'pull', instructions: 'Pull the chest toward the bar while keeping the body tight and controlled.', mistakes: 'Swinging and kicking the legs.', safetyTips: 'Use assistance if needed and keep the shoulders down.', alternatives: ['Lat Pulldown', 'Assisted Pull-Up'], progression: 'Add reps before adding load.', sets: '3 Sets', reps: '6–10 Reps', rest: '75s', tempo: '2-1-2' },
+        { name: 'Lat Pulldown', primary: ['Lats'], secondary: ['Biceps', 'Upper Back'], movement: 'Vertical Pull', difficulty: 'Beginner', svgKey: 'pull', instructions: 'Drive the elbows down and back to bring the bar to the upper chest.', mistakes: 'Pulling behind the neck or using momentum.', safetyTips: 'Keep the torso stable and avoid excessive lean.', alternatives: ['Pull-Up', 'Straight-Arm Pulldown'], progression: 'Try a slight pause in the stretched position.', sets: '3 Sets', reps: '10–12 Reps', rest: '60s', tempo: '2-1-2' },
+        { name: 'Squat', primary: ['Quads'], secondary: ['Glutes', 'Core'], movement: 'Squat', difficulty: 'Intermediate', svgKey: 'squat', instructions: 'Sit into the hips, brace the abdominals, and stand tall with the torso upright.', mistakes: 'Knees collapsing and heels lifting.', safetyTips: 'Keep the bar path centered and use a spotter for heavy loads.', alternatives: ['Goblet Squat', 'Leg Press'], progression: 'When all reps feel smooth, add 5 lb and keep volume consistent.', sets: '4 Sets', reps: '6–8 Reps', rest: '120s', tempo: '3-1-1' },
+        { name: 'Front Squat', primary: ['Quads'], secondary: ['Core', 'Upper Back'], movement: 'Squat', difficulty: 'Intermediate', svgKey: 'squat', instructions: 'Set the bar high on the front rack and sit down without losing balance.', mistakes: 'Caving the torso and dropping the elbows.', safetyTips: 'Start light until the rack position feels natural.', alternatives: ['Goblet Squat', 'Hack Squat'], progression: 'Add a pause at the bottom for a stronger position.', sets: '3 Sets', reps: '8–10 Reps', rest: '90s', tempo: '3-1-1' },
+        { name: 'Goblet Squat', primary: ['Quads'], secondary: ['Glutes', 'Core'], movement: 'Squat', difficulty: 'Beginner', svgKey: 'squat', instructions: 'Hold the weight close to the chest and descend to a comfortable depth.', mistakes: 'Leaning too far back or letting the knees cave.', safetyTips: 'Move slowly and keep the weight centered.', alternatives: ['Bodyweight Squat', 'Leg Press'], progression: 'Increase the load or lengthen the pause at the bottom.', sets: '3 Sets', reps: '10–12 Reps', rest: '60s', tempo: '2-1-2' },
+        { name: 'Romanian Deadlift', primary: ['Hamstrings'], secondary: ['Glutes', 'Lower Back'], movement: 'Hinge', difficulty: 'Intermediate', svgKey: 'hinge', instructions: 'Keep a soft bend in the knees and hinge the hips back until the hamstrings stretch.', mistakes: 'Rounding the upper back and letting the bar drift away.', safetyTips: 'Stop when the torso feels like it is collapsing into flexion.', alternatives: ['Good Morning', 'Hip Thrust'], progression: 'Use a 2-second pause at the bottom for a stronger setup.', sets: '4 Sets', reps: '6–8 Reps', rest: '120s', tempo: '3-1-1' },
+        { name: 'Hip Thrust', primary: ['Glutes'], secondary: ['Hamstrings', 'Core'], movement: 'Hinge', difficulty: 'Beginner', svgKey: 'hinge', instructions: 'Drive through the heels, keep the upper back on the bench, and squeeze the glutes at the top.', mistakes: 'Over-arching the lower back and losing tension.', safetyTips: 'Press through the heels and keep the chin tucked.', alternatives: ['Glute Bridge', 'Lunge'], progression: 'Do a brief pause at the top to maximize squeeze.', sets: '3 Sets', reps: '10–12 Reps', rest: '60s', tempo: '2-1-2' },
+        { name: 'Split Squat', primary: ['Quads'], secondary: ['Glutes', 'Core'], movement: 'Single-Leg Squat', difficulty: 'Intermediate', svgKey: 'squat', instructions: 'Set one foot forward and one back, then lower straight down before driving through the front heel.', mistakes: 'Letting the front knee cave inward or collapsing at the bottom.', safetyTips: 'Keep the torso tall and the front foot planted.', alternatives: ['Reverse Lunge', 'Bulgarian Split Squat'], progression: 'Add a pause at the bottom or use a backpack for more load.', sets: '3 Sets', reps: '8–10 Reps', rest: '75s', tempo: '3-1-1' },
+        { name: 'Reverse Lunge', primary: ['Quads'], secondary: ['Glutes', 'Core'], movement: 'Single-Leg Squat', difficulty: 'Beginner', svgKey: 'squat', instructions: 'Step back and lower the knee until the front thigh is near parallel.', mistakes: 'Dropping the torso and overstriding.', safetyTips: 'Stay tall and keep the front foot planted.', alternatives: ['Split Squat', 'Walking Lunge'], progression: 'Add a small pause at the bottom and slow the lowering.', sets: '3 Sets', reps: '10 Reps/Leg', rest: '60s', tempo: '2-1-2' },
+        { name: 'Walking Lunge', primary: ['Quads'], secondary: ['Glutes', 'Core'], movement: 'Single-Leg Squat', difficulty: 'Intermediate', svgKey: 'squat', instructions: 'Step into the lunge and keep each stride controlled and balanced.', mistakes: 'Overstriding and leaning forward.', safetyTips: 'Use a lighter load and move smoothly.', alternatives: ['Bulgarian Split Squat', 'Reverse Lunge'], progression: 'Add load only when your balance remains solid.', sets: '3 Sets', reps: '12 Reps/Leg', rest: '60s', tempo: '3-1-1' },
+        { name: 'Leg Curl', primary: ['Hamstrings'], secondary: ['Calves'], movement: 'Knee Flexion', difficulty: 'Beginner', svgKey: 'hinge', instructions: 'Curl the pad down and squeeze the hamstrings before returning.', mistakes: 'Using momentum and extending the hips.', safetyTips: 'Avoid overextending the hips at the top.', alternatives: ['Hamstring Curl', 'Glute Ham Raise'], progression: 'Add a full squeeze at the bottom.', sets: '3 Sets', reps: '10–12 Reps', rest: '45s', tempo: '2-1-2' },
+        { name: 'Leg Extension', primary: ['Quads'], secondary: ['Hip Flexors'], movement: 'Knee Extension', difficulty: 'Beginner', svgKey: 'squat', instructions: 'Extend the legs and pause briefly before returning.', mistakes: 'Swinging and locking out too hard.', safetyTips: 'Use a controlled range and stop before the knees feel stressed.', alternatives: ['Squat', 'Hack Squat'], progression: 'Add a slight pause at the top.', sets: '3 Sets', reps: '12–15 Reps', rest: '45s', tempo: '2-1-2' },
+        { name: 'Calf Raise', primary: ['Calves'], secondary: ['Soleus'], movement: 'Ankle Plantarflexion', difficulty: 'Beginner', svgKey: 'mobility', instructions: 'Rise fully onto the balls of the feet and pause before lowering.', mistakes: 'Bouncing and not using the full range.', safetyTips: 'Keep knees soft and weight centered.', alternatives: ['Seated Calf Raise', 'Jump Rope'], progression: 'Add tempo or a pause at the top.', sets: '4 Sets', reps: '15–20 Reps', rest: '45s', tempo: '2-1-2' },
+        { name: 'Plank', primary: ['Core'], secondary: ['Shoulders', 'Glutes'], movement: 'Anti-Extension', difficulty: 'Beginner', svgKey: 'core', instructions: 'Brace hard and create a straight line from shoulders to heels.', mistakes: 'Sagging hips or shrugging the shoulders.', safetyTips: 'Breathe out steadily and keep the ribs down.', alternatives: ['Side Plank', 'Dead Bug'], progression: 'Add time before adding more difficulty.', sets: '3 Sets', reps: '45s', rest: '30s', tempo: '1-0-1' },
+        { name: 'Side Plank', primary: ['Obliques'], secondary: ['Core', 'Glutes'], movement: 'Anti-Lateral Flexion', difficulty: 'Beginner', svgKey: 'core', instructions: 'Stack the feet and keep the torso straight while holding.', mistakes: 'Dropping the hips or twisting the torso.', safetyTips: 'Focus on a long line and slow breathing.', alternatives: ['Plank', 'Farmer Carry'], progression: 'Add time or lift the top leg.', sets: '3 Sets', reps: '30s/Side', rest: '30s', tempo: '1-0-1' },
+        { name: 'Farmer Carry', primary: ['Core'], secondary: ['Grip', 'Upper Back'], movement: 'Carry', difficulty: 'Beginner', svgKey: 'cardio', instructions: 'Walk tall with the weights close to your sides and avoid leaning.', mistakes: 'Shrugging and letting the trunk rotate.', safetyTips: 'Choose a manageable load and keep the shoulders packed.', alternatives: ['Suitcase Carry', 'Trap Bar Walk'], progression: 'Add time or weight while keeping your posture steady.', sets: '3 Sets', reps: '30–40m', rest: '45s', tempo: '1-0-1' },
+        { name: 'Deadlift', primary: ['Glutes'], secondary: ['Hamstrings', 'Upper Back'], movement: 'Hinge', difficulty: 'Advanced', svgKey: 'hinge', instructions: 'Brace hard, pull the slack out, and stand tall with the hips and knees locking.', mistakes: 'Rounding the spine and losing position.', safetyTips: 'Use a spotter or handle only with perfect form at heavy loads.', alternatives: ['Trap Bar Deadlift', 'Romanian Deadlift'], progression: 'Add a rep or a small jump in load only when technique stays solid.', sets: '4 Sets', reps: '3–5 Reps', rest: '180s', tempo: '3-1-1' },
+        { name: 'Bicep Curl', primary: ['Biceps'], secondary: ['Forearms'], movement: 'Elbow Flexion', difficulty: 'Beginner', svgKey: 'arms', instructions: 'Curl the weight without swinging and keep the elbows near the ribs.', mistakes: 'Swinging and bouncing the weight.', safetyTips: 'Use a controlled eccentric and keep the wrists neutral.', alternatives: ['Hammer Curl', 'Cable Curl'], progression: 'Slow the lowering phase to increase tension.', sets: '3 Sets', reps: '10–12 Reps', rest: '45s', tempo: '2-1-2' },
+        { name: 'Hammer Curl', primary: ['Biceps'], secondary: ['Forearms', 'Brachialis'], movement: 'Elbow Flexion', difficulty: 'Beginner', svgKey: 'arms', instructions: 'Keep the palms neutral and curl through the whole range.', mistakes: 'Using momentum and shrugging.', safetyTips: 'Stay tall and avoid rocking the torso.', alternatives: ['Bicep Curl', 'Cable Curl'], progression: 'Add a pause at the top for a stronger squeeze.', sets: '3 Sets', reps: '10–12 Reps', rest: '45s', tempo: '2-1-2' },
+        { name: 'Triceps Extension', primary: ['Triceps'], secondary: ['Chest'], movement: 'Elbow Extension', difficulty: 'Beginner', svgKey: 'arms', instructions: 'Extend the elbows and squeeze the triceps without letting the upper arms drift.', mistakes: 'Using the shoulders to move the weight.', safetyTips: 'Keep the elbows tucked and the wrists stable.', alternatives: ['Pushdown', 'Skull Crusher'], progression: 'Use a brief pause at full extension.', sets: '3 Sets', reps: '12–15 Reps', rest: '45s', tempo: '2-1-2' },
+        { name: 'Skull Crusher', primary: ['Triceps'], secondary: ['Chest'], movement: 'Elbow Extension', difficulty: 'Intermediate', svgKey: 'arms', instructions: 'Lower the weight to the forehead and extend the elbows without flaring.', mistakes: 'Allowing the elbows to drift and using the shoulders.', safetyTips: 'Use a manageable load and keep wrists stacked over elbows.', alternatives: ['Triceps Extension', 'Pushdown'], progression: 'Control the eccentric and pause at the bottom.', sets: '3 Sets', reps: '8–10 Reps', rest: '60s', tempo: '3-1-2' }
+      ];
+
+      const variants = ['Barbell', 'Dumbbell', 'Cable', 'Machine'];
+      const library = [];
+      templates.forEach((template) => {
+        variants.forEach((variant) => {
+          const name = variant === 'Barbell' ? `${template.name}` : `${variant} ${template.name}`;
+          const equipment = variant;
+          const sets = template.sets;
+          const reps = template.reps;
+          const rest = template.rest;
+          const tempo = template.tempo;
+          library.push(createExercise({
+            name,
+            primary: template.primary,
+            secondary: template.secondary,
+            equipment,
+            difficulty: template.difficulty,
+            movement: template.movement,
+            sets,
+            reps,
+            rest,
+            tempo,
+            instructions: template.instructions,
+            mistakes: template.mistakes,
+            safetyTips: template.safetyTips,
+            alternatives: template.alternatives,
+            progression: template.progression,
+            svgKey: template.svgKey
+          }));
+        });
+      });
+      return library;
+    }
+
+    const exerciseLibrary = buildExerciseLibrary();
+
+    const workoutTemplates = {
+      fullBody: [
+        { title: 'Full Body A', focus: 'Squat + Press + Row', exercises: ['Barbell Squat', 'Dumbbell Bench Press', 'Cable Row', 'Plank'] },
+        { title: 'Full Body B', focus: 'Hinge + Pull + Core', exercises: ['Dumbbell Romanian Deadlift', 'Lat Pulldown', 'Incline Press', 'Farmer Carry'] },
+        { title: 'Full Body C', focus: 'Hypertrophy + Arms', exercises: ['Goblet Squat', 'Machine Chest Press', 'Dumbbell Row', 'Bicep Curl'] }
+      ],
+      upperLower: [
+        { title: 'Upper A', focus: 'Chest, Back, Delts', exercises: ['Barbell Bench Press', 'Cable Row', 'Dumbbell Overhead Press', 'Face Pull'] },
+        { title: 'Lower A', focus: 'Quads + Hamstrings', exercises: ['Barbell Squat', 'Romanian Deadlift', 'Leg Extension', 'Plank'] },
+        { title: 'Upper B', focus: 'Incline + Pull', exercises: ['Dumbbell Incline Press', 'Pull-Up', 'Lateral Raise', 'Hammer Curl'] },
+        { title: 'Lower B', focus: 'Posterior Chain', exercises: ['Deadlift', 'Hip Thrust', 'Reverse Lunge', 'Calf Raise'] }
+      ],
+      ppl: [
+        { title: 'Push', focus: 'Chest, Shoulders, Triceps', exercises: ['Barbell Bench Press', 'Dumbbell Overhead Press', 'Dumbbell Lateral Raise', 'Triceps Extension'] },
+        { title: 'Pull', focus: 'Back + Biceps', exercises: ['Cable Row', 'Lat Pulldown', 'Face Pull', 'Bicep Curl'] },
+        { title: 'Legs', focus: 'Squat + Hinge', exercises: ['Barbell Squat', 'Romanian Deadlift', 'Walking Lunge', 'Plank'] }
+      ],
+      hypertrophy: [
+        { title: 'Chest', focus: 'Chest volume and control', exercises: ['Barbell Bench Press', 'Dumbbell Incline Press', 'Cable Chest Fly', 'Push-Up'] },
+        { title: 'Back', focus: 'Upper back and lats', exercises: ['Pull-Up', 'Cable Row', 'Chest-Supported Row', 'Face Pull'] },
+        { title: 'Shoulders', focus: 'Delts and cuff strength', exercises: ['Dumbbell Overhead Press', 'Dumbbell Lateral Raise', 'Rear Delt Fly', 'Plank'] },
+        { title: 'Legs', focus: 'Quad and posterior chain', exercises: ['Barbell Squat', 'Romanian Deadlift', 'Leg Curl', 'Calf Raise'] },
+        { title: 'Arms', focus: 'Biceps and triceps', exercises: ['Bicep Curl', 'Hammer Curl', 'Triceps Extension', 'Skull Crusher'] }
+      ],
+      advanced: [
+        { title: 'Rotation 1', focus: 'Upper strength', exercises: ['Barbell Bench Press', 'Cable Row', 'Dumbbell Overhead Press', 'Pull-Up'] },
+        { title: 'Rotation 2', focus: 'Lower strength', exercises: ['Barbell Squat', 'Romanian Deadlift', 'Split Squat', 'Farmer Carry'] },
+        { title: 'Rotation 3', focus: 'Volume and arm work', exercises: ['Incline Press', 'Chest-Supported Row', 'Lateral Raise', 'Hammer Curl'] },
+        { title: 'Rotation 4', focus: 'Posterior chain', exercises: ['Deadlift', 'Hip Thrust', 'Leg Curl', 'Plank'] },
+        { title: 'Rotation 5', focus: 'Chest + shoulder volume', exercises: ['Machine Chest Press', 'Dumbbell Rear Delt Fly', 'Cable Face Pull', 'Calf Raise'] },
+        { title: 'Rotation 6', focus: 'Recovery + mobility', exercises: ['Goblet Squat', 'Side Plank', 'Farmer Carry', 'Chest Fly'] },
+        { title: 'Rotation 7', focus: 'Recovery + oscillation', exercises: ['Push-Up', 'Lat Pulldown', 'Side Plank', 'Bicep Curl'] }
+      ]
+    };
+
+    function buildWorkoutPlan() {
+      const count = state.selectedDays.length;
+      let templateKey = 'fullBody';
+      if (count === 2) templateKey = 'upperLower';
+      if (count === 3) templateKey = state.splitType === 'ppl' ? 'ppl' : 'fullBody';
+      if (count === 4) templateKey = 'upperLower';
+      if (count === 5) templateKey = 'hypertrophy';
+      if (count === 6) templateKey = 'ppl';
+      if (count >= 7) templateKey = 'advanced';
+
+      const base = workoutTemplates[templateKey] || workoutTemplates.fullBody;
+      const plan = [];
+      state.selectedDays.forEach((day, index) => {
+        const source = base[index % base.length];
+        const exercises = source.exercises.map((name) => {
+          const match = exerciseLibrary.find((item) => item.name.toLowerCase() === name.toLowerCase() || item.name.toLowerCase().includes(name.toLowerCase()));
+          return match || exerciseLibrary[0];
+        });
+        plan.push({ day, title: source.title, focus: source.focus, exercises });
+      });
+      return plan;
+    }
+
+    function ensureLog(day, exerciseName) {
+      if (!state.logs[day]) state.logs[day] = {};
+      if (!state.logs[day][exerciseName]) {
+        state.logs[day][exerciseName] = { weight: '', reps: '', sets: '', rpe: 7, completed: false, notes: '' };
+      }
+      return state.logs[day][exerciseName];
+    }
+
+    function getTodayLabel() {
+      const now = new Date();
+      const day = dayOrder[now.getDay() === 0 ? 6 : now.getDay() - 1];
+      return day;
+    }
+
+    function getTodayWorkout() {
+      const plan = buildWorkoutPlan();
+      return plan.find((entry) => entry.day === getTodayLabel()) || plan[0];
+    }
+
+    let timerInterval = null;
+
+    function renderApp() {
+      applyTheme();
+      renderHero();
+      renderDashboard();
+      renderPlannerControls();
+      renderPlan();
+      renderLogPanel();
+      renderExerciseLibrary();
+      renderAnalytics();
+      renderProgressionPanel();
+      renderRecovery();
+      renderMuscleMapPanel();
+      renderNutrition();
+      renderTools();
+      renderRecords();
+      renderSettings();
+      saveState();
+    }
+
+    function applyTheme() {
+      const root = document.documentElement;
+      root.classList.toggle('dark', state.settings.theme === 'dark');
+      root.style.colorScheme = state.settings.theme === 'dark' ? 'dark' : 'light';
+    }
+
+    function renderHero() {
+      const plan = buildWorkoutPlan();
+      const today = getTodayWorkout();
+      const totalVolume = Object.values(state.logs).reduce((sum, dayLogs) => {
+        return sum + Object.values(dayLogs).reduce((daySum, log) => daySum + (Number(log.weight) || 0) * (Number(log.reps) || 0), 0);
+      }, 0);
+      document.getElementById('hero-status').textContent = today ? `Today: ${today.title}` : 'Ready to train';
+      document.getElementById('hero-split').textContent = state.splitType === 'upperLower' ? 'Upper / Lower' : state.splitType === 'ppl' ? 'Push / Pull / Legs' : state.splitType === 'hypertrophy' ? 'Hypertrophy' : 'Full Body';
+      document.getElementById('hero-days').textContent = `${state.selectedDays.length} Day${state.selectedDays.length === 1 ? '' : 's'}`;
+      document.getElementById('hero-recovery').textContent = `${state.recovery.recoveryPercent}%`;
+      document.getElementById('hero-volume').textContent = `${Math.round(totalVolume).toLocaleString()} ${state.settings.units}`;
+
+      const todayCard = document.getElementById('today-card');
+      if (!today) {
+        todayCard.innerHTML = '<p class="text-sm text-slate-400">Choose a few training days to unlock your daily session.</p>';
+        return;
+      }
+      todayCard.innerHTML = `
+        <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+          <p class="text-xs font-semibold uppercase tracking-[0.28em] text-blue-400">${dayLabels[today.day] || today.day}</p>
+          <h4 class="mt-2 text-lg font-black text-white">${today.title}</h4>
+          <p class="mt-1 text-sm text-slate-400">${today.focus}</p>
+          <div class="mt-3 space-y-2">
+            ${today.exercises.slice(0, 4).map((exercise, index) => `<div class="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-900/70 px-3 py-2 text-sm text-slate-300"><span>${index + 1}. ${exercise.name}</span><span class="font-semibold text-blue-300">${exercise.sets}</span></div>`).join('')}
+          </div>
+          <button onclick="markTodayComplete()" class="mt-4 w-full rounded-2xl bg-blue-600 px-3 py-2 text-sm font-semibold text-white">Mark workout complete</button>
+        </div>`;
+    }
+
+    function renderDashboard() {
+      const plan = buildWorkoutPlan();
+      const totalVolume = Object.values(state.logs).reduce((sum, dayLogs) => {
+        return sum + Object.values(dayLogs).reduce((daySum, log) => daySum + (Number(log.weight) || 0) * (Number(log.reps) || 0), 0);
+      }, 0);
+      const completionRatio = Math.round((state.completedWorkouts.length / Math.max(1, plan.length)) * 100);
+      const streak = Math.max(1, state.completedWorkouts.length);
+      const totalHours = Math.max(1, Math.round(plan.length * 1.25));
+      const muscles = [...new Set(plan.flatMap((entry) => entry.exercises.flatMap((exercise) => exercise.primary)))].slice(0, 4).join(', ');
+      const cards = [
+        { label: 'Today\'s Workout', value: plan[0]?.title || 'Build split', accent: 'blue' },
+        { label: 'Workout Streak', value: `${streak} days`, accent: 'emerald' },
+        { label: 'Current Split', value: state.splitType === 'upperLower' ? 'Upper / Lower' : state.splitType === 'ppl' ? 'PPL' : state.splitType === 'hypertrophy' ? 'Hypertrophy' : 'Full Body', accent: 'violet' },
+        { label: 'Recovery Status', value: `${state.recovery.recoveryPercent}%`, accent: 'amber' },
+        { label: 'Weekly Volume', value: `${Math.round(totalVolume / 10)}k ${state.settings.units}`, accent: 'cyan' },
+        { label: 'Time in Gym', value: `${totalHours}h`, accent: 'rose' },
+        { label: 'Calories Burned', value: `${Math.round(totalHours * 320)} kcal`, accent: 'fuchsia' },
+        { label: 'Muscles Trained', value: muscles, accent: 'indigo' },
+        { label: 'Completion %', value: `${completionRatio}%`, accent: 'blue' },
+        { label: 'Training Days', value: `${plan.length}`, accent: 'emerald' }
+      ];
+      document.getElementById('dashboard-grid').innerHTML = cards.map((card) => `
+        <div class="card-hover rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+          <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400">${card.label}</p>
+          <p class="mt-2 text-lg font-black text-white">${card.value}</p>
+        </div>`).join('');
+    }
+
+    function renderPlannerControls() {
+      const daySelector = document.getElementById('day-selector');
+      daySelector.innerHTML = dayOrder.map((day) => {
+        const active = state.selectedDays.includes(day);
+        return `
+          <button type="button" onclick="toggleDay('${day}')" class="rounded-2xl border ${active ? 'border-blue-500 bg-blue-500/15 text-blue-200' : 'border-slate-700 bg-slate-900/80 text-slate-300'} px-3 py-2 text-sm font-semibold">
+            <div class="text-[10px] uppercase tracking-[0.24em] text-slate-400">${dayLabels[day].slice(0, 3)}</div>
+            <div class="mt-1 text-sm font-black">${day}</div>
+          </button>`;
+      }).join('');
+
+      const splitSelect = document.getElementById('split-selector');
+      const splitOptions = [
+        { value: 'fullBody', label: 'Full Body (1-3 day)' },
+        { value: 'upperLower', label: 'Upper / Lower (4 day)' },
+        { value: 'ppl', label: 'Push / Pull / Legs (6 day)' },
+        { value: 'hypertrophy', label: '5-Day Hypertrophy' },
+        { value: 'advanced', label: '7-Day Advanced Rotation' }
+      ];
+      splitSelect.innerHTML = splitOptions.map((option) => `<option value="${option.value}" ${state.splitType === option.value ? 'selected' : ''}>${option.label}</option>`).join('');
+      document.getElementById('split-summary').innerHTML = state.selectedDays.length >= 5 ? 'Hypertrophy volume is recommended for muscle gain with a recovery day every week.' : state.selectedDays.length >= 3 ? 'A balanced split keeps each session focused and supports recovery between sessions.' : 'A simple split keeps the plan sustainable and easy to follow.';
+    }
+
+    function renderPlan() {
+      const plan = buildWorkoutPlan();
+      const grid = document.getElementById('plan-grid');
+      grid.innerHTML = plan.map((entry) => `
+        <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="text-[11px] uppercase tracking-[0.28em] text-blue-400">${dayLabels[entry.day] || entry.day}</p>
+              <h4 class="mt-1 text-lg font-black text-white">${entry.title}</h4>
+              <p class="mt-1 text-sm text-slate-400">${entry.focus}</p>
+            </div>
+            <button onclick="markDayComplete('${entry.day}')" class="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-300">Complete</button>
+          </div>
+          <div class="mt-4 space-y-2">
+            ${entry.exercises.map((exercise) => `
+              <button onclick="openExerciseModal('${exercise.name}')" class="flex w-full items-center justify-between rounded-2xl border border-slate-800 bg-slate-900/80 px-3 py-2 text-left text-sm text-slate-300">
+                <span>${exercise.name}</span>
+                <span class="rounded-full bg-blue-500/10 px-2.5 py-1 text-[11px] font-semibold text-blue-300">${exercise.sets}</span>
+              </button>`).join('')}
+          </div>
+        </div>`).join('');
+    }
+
+    function renderLogPanel() {
+      const plan = buildWorkoutPlan();
+      const todayEntry = plan.find((entry) => entry.day === getTodayLabel()) || plan[0];
+      const panel = document.getElementById('log-panel');
+      if (!todayEntry) {
+        panel.innerHTML = '<p class="text-sm text-slate-400">Choose a schedule to start logging exercises.</p>';
+        return;
+      }
+      panel.innerHTML = `
+        <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-[11px] uppercase tracking-[0.28em] text-blue-400">Live Session</p>
+              <h4 class="mt-1 text-lg font-black text-white">${todayEntry.title}</h4>
+            </div>
+            <div class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1 text-xs font-semibold text-slate-400">${dayLabels[todayEntry.day] || todayEntry.day}</div>
+          </div>
+          <div class="mt-4 space-y-3">
+            ${todayEntry.exercises.map((exercise) => {
+              const log = ensureLog(todayEntry.day, exercise.name);
+              return `
+                <div class="rounded-2xl border border-slate-800 bg-slate-900/80 p-3">
+                  <div class="flex items-center justify-between gap-3">
+                    <div>
+                      <p class="text-sm font-semibold text-white">${exercise.name}</p>
+                      <p class="text-xs text-slate-400">${exercise.primary.join(' · ')}</p>
+                    </div>
+                    <label class="flex items-center gap-2 text-xs font-semibold text-slate-400">
+                      <input type="checkbox" onchange="toggleExerciseComplete('${todayEntry.day}', '${exercise.name}', this.checked)" ${log.completed ? 'checked' : ''} class="h-4 w-4 rounded border-slate-600 bg-slate-800" />
+                      Done
+                    </label>
+                  </div>
+                  <div class="mt-3 grid gap-2 sm:grid-cols-2">
+                    <input value="${log.weight}" oninput="updateLog('${todayEntry.day}', '${exercise.name}', 'weight', this.value)" placeholder="Weight" class="rounded-2xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200" />
+                    <input value="${log.reps}" oninput="updateLog('${todayEntry.day}', '${exercise.name}', 'reps', this.value)" placeholder="Reps" class="rounded-2xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200" />
+                    <input value="${log.sets}" oninput="updateLog('${todayEntry.day}', '${exercise.name}', 'sets', this.value)" placeholder="Sets" class="rounded-2xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200" />
+                    <input value="${log.rpe}" oninput="updateLog('${todayEntry.day}', '${exercise.name}', 'rpe', this.value)" placeholder="RPE" class="rounded-2xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200" />
+                  </div>
+                  <textarea rows="2" oninput="updateLog('${todayEntry.day}', '${exercise.name}', 'notes', this.value)" placeholder="Personal notes" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200">${log.notes}</textarea>
+                </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+    }
+
+    function renderExerciseLibrary() {
+      const filterValue = document.getElementById('exercise-search')?.value?.toLowerCase() || '';
+      const muscleValue = document.getElementById('filter-muscle')?.value || 'all';
+      const equipmentValue = document.getElementById('filter-equipment')?.value || 'all';
+      const difficultyValue = document.getElementById('filter-difficulty')?.value || 'all';
+      const favoritesOnly = document.getElementById('favorite-toggle')?.dataset.active === 'true';
+
+      const muscleOptions = [...new Set(exerciseLibrary.flatMap((exercise) => exercise.primary.concat(exercise.secondary)))].sort();
+      const equipmentOptions = [...new Set(exerciseLibrary.map((exercise) => exercise.equipment))].sort();
+      const difficultyOptions = ['Beginner', 'Intermediate', 'Advanced'];
+
+      const muscleSelect = document.getElementById('filter-muscle');
+      const equipmentSelect = document.getElementById('filter-equipment');
+      const difficultySelect = document.getElementById('filter-difficulty');
+      if (muscleSelect && muscleSelect.innerHTML === '') {
+        muscleSelect.innerHTML = ['<option value="all">All muscles</option>', ...muscleOptions.map((option) => `<option value="${option}">${option}</option>`)].join('');
+      }
+      if (equipmentSelect && equipmentSelect.innerHTML === '') {
+        equipmentSelect.innerHTML = ['<option value="all">All equipment</option>', ...equipmentOptions.map((option) => `<option value="${option}">${option}</option>`)].join('');
+      }
+      if (difficultySelect && difficultySelect.innerHTML === '') {
+        difficultySelect.innerHTML = ['<option value="all">All difficulty</option>', ...difficultyOptions.map((option) => `<option value="${option}">${option}</option>`)].join('');
+      }
+
+      const filtered = exerciseLibrary.filter((exercise) => {
+        const matchSearch = !filterValue || `${exercise.name} ${exercise.primary.join(' ')} ${exercise.secondary.join(' ')} ${exercise.movement}`.toLowerCase().includes(filterValue);
+        const matchMuscle = muscleValue === 'all' || exercise.primary.includes(muscleValue) || exercise.secondary.includes(muscleValue);
+        const matchEquipment = equipmentValue === 'all' || exercise.equipment === equipmentValue;
+        const matchDifficulty = difficultyValue === 'all' || exercise.difficulty === difficultyValue;
+        const matchFavorites = !favoritesOnly || state.favorites.includes(exercise.name);
+        return matchSearch && matchMuscle && matchEquipment && matchDifficulty && matchFavorites;
+      });
+
+      const toggleButton = document.getElementById('favorite-toggle');
+      if (toggleButton) {
+        toggleButton.className = `rounded-full border px-3 py-2 text-sm font-semibold ${favoritesOnly ? 'border-amber-500/25 bg-amber-500/10 text-amber-300' : 'border-slate-700 bg-slate-950/70 text-slate-400'}`;
+        toggleButton.textContent = favoritesOnly ? 'Showing favorites' : 'Favorites only';
+      }
+
+      const list = document.getElementById('exercise-library');
+      list.innerHTML = filtered.slice(0, 18).map((exercise) => `
+        <div class="card-hover rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="text-[11px] uppercase tracking-[0.28em] text-slate-400">${exercise.equipment}</p>
+              <h4 class="mt-1 text-lg font-black text-white">${exercise.name}</h4>
+              <p class="mt-2 text-sm text-slate-400">${exercise.primary.join(' · ')}</p>
+            </div>
+            <button onclick="toggleFavorite('${exercise.name}')" class="rounded-2xl border ${state.favorites.includes(exercise.name) ? 'border-amber-500/25 bg-amber-500/10 text-amber-300' : 'border-slate-700 bg-slate-900/70 text-slate-400'} px-3 py-2 text-sm font-semibold">★</button>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            ${exercise.primary.slice(0, 3).map((muscle) => `<span class="rounded-full border border-blue-500/20 bg-blue-500/10 px-2.5 py-1 text-[11px] font-semibold text-blue-300">${muscle}</span>`).join('')}
+          </div>
+          <div class="mt-4 flex items-center justify-between text-sm text-slate-400">
+            <span>${exercise.sets} · ${exercise.reps}</span>
+            <span>${exercise.difficulty}</span>
+          </div>
+          <div class="mt-3 flex items-center gap-2">
+            <button onclick="openExerciseModal('${exercise.name}')" class="flex-1 rounded-2xl bg-blue-600 px-3 py-2 text-sm font-semibold text-white">View guide</button>
+            <button onclick="quickLog('${exercise.name}')" class="rounded-2xl border border-slate-700 bg-slate-900/70 px-3 py-2 text-sm font-semibold text-slate-300">Log</button>
+          </div>
+        </div>`).join('');
+    }
+
+    function renderAnalytics() {
+      const panel = document.getElementById('analytics-panel');
+      const weekly = Array.from({ length: 7 }, (_, index) => {
+        const completed = state.completedWorkouts.filter((entry) => entry.day === dayOrder[index]).length;
+        return Math.max(0, completed * 4 + (index % 2) * 2);
+      });
+      const monthly = Array.from({ length: 6 }, (_, index) => 20 + index * 8 + (index % 2) * 3);
+      const completedExercises = Object.values(state.logs).reduce((sum, dayLogs) => sum + Object.values(dayLogs).filter((log) => log.completed).length, 0);
+      const muscleBalance = [
+        { label: 'Chest', value: 78 },
+        { label: 'Back', value: 74 },
+        { label: 'Legs', value: 82 },
+        { label: 'Shoulders', value: 69 },
+        { label: 'Arms', value: 66 }
+      ];
+      panel.innerHTML = `
+        <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+          <h4 class="text-sm font-black uppercase tracking-[0.3em] text-slate-400">Weekly trend</h4>
+          <svg viewBox="0 0 320 140" class="mt-3 w-full">
+            <line x1="20" y1="120" x2="300" y2="120" stroke="#334155" stroke-width="2" />
+            <line x1="20" y1="20" x2="20" y2="120" stroke="#334155" stroke-width="2" />
+            ${weekly.map((value, index) => `
+              <rect x="${38 + index * 38}" y="${120 - value}" width="24" height="${value}" rx="6" fill="${index === weekly.length - 1 ? '#3b82f6' : '#1d4ed8'}" />`).join('')}
+          </svg>
+          <div class="mt-4 grid gap-3 sm:grid-cols-3">
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-3 text-sm text-slate-400"><p class="text-[11px] uppercase tracking-[0.28em] text-slate-500">Completion rate</p><p class="mt-1 text-lg font-black text-white">${Math.min(100, Math.round((completedExercises / Math.max(1, completedExercises + 3)) * 100))}%</p></div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-3 text-sm text-slate-400"><p class="text-[11px] uppercase tracking-[0.28em] text-slate-500">Exercises done</p><p class="mt-1 text-lg font-black text-white">${completedExercises}</p></div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-3 text-sm text-slate-400"><p class="text-[11px] uppercase tracking-[0.28em] text-slate-500">Monthly trend</p><p class="mt-1 text-lg font-black text-white">${monthly[monthly.length - 1]}%</p></div>
+          </div>
+        </div>
+        <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+          <h4 class="text-sm font-black uppercase tracking-[0.3em] text-slate-400">Muscle balance</h4>
+          <div class="mt-3 space-y-3">
+            ${muscleBalance.map((item) => `
+              <div>
+                <div class="mb-1 flex items-center justify-between text-sm text-slate-300"><span>${item.label}</span><span>${item.value}%</span></div>
+                <div class="h-2 rounded-full bg-slate-800"><div class="h-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400" style="width:${item.value}%"></div></div>
+              </div>`).join('')}
+          </div>
+          <div class="mt-4 rounded-2xl border border-slate-800 bg-slate-900/70 p-3 text-sm text-slate-400">
+            <span class="font-semibold text-white">Workout streak:</span> ${Math.max(1, state.completedWorkouts.length)} days sustained.
+          </div>
+        </div>`;
+    }
+
+    function renderProgressionPanel() {
+      const latestEntries = Object.values(state.logs).flatMap((dayLogs) => Object.entries(dayLogs).map(([name, log]) => ({ name, weight: Number(log.weight) || 0, reps: Number(log.reps) || 0, completed: log.completed })));
+      const completed = latestEntries.filter((entry) => entry.completed && entry.weight > 0);
+      const latest = completed[completed.length - 1];
+      const previousBest = completed.reduce((max, item) => Math.max(max, item.weight), 0);
+      const currentWeight = latest ? latest.weight : 0;
+      const previousWeight = currentWeight ? Math.max(0, currentWeight - 2.5) : 0;
+      const estimatedNext = currentWeight ? currentWeight + (currentWeight >= 100 ? 5 : 2.5) : 0;
+      const panel = document.getElementById('progression-panel');
+      panel.innerHTML = `
+        <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+          <div class="flex items-center justify-between gap-2">
+            <h4 class="text-sm font-black uppercase tracking-[0.3em] text-slate-400">Progressive overload</h4>
+            <div class="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">Adaptive suggestion</div>
+          </div>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-3"><p class="text-[11px] uppercase tracking-[0.28em] text-slate-500">Current weight</p><p class="mt-1 text-lg font-black text-white">${currentWeight || '—'} ${state.settings.units}</p></div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-3"><p class="text-[11px] uppercase tracking-[0.28em] text-slate-500">Previous weight</p><p class="mt-1 text-lg font-black text-white">${previousWeight || '—'} ${state.settings.units}</p></div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-3"><p class="text-[11px] uppercase tracking-[0.28em] text-slate-500">Estimated next</p><p class="mt-1 text-lg font-black text-white">${estimatedNext || '—'} ${state.settings.units}</p></div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-3"><p class="text-[11px] uppercase tracking-[0.28em] text-slate-500">Previous best</p><p class="mt-1 text-lg font-black text-white">${previousBest || '—'} ${state.settings.units}</p></div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-3"><p class="text-[11px] uppercase tracking-[0.28em] text-slate-500">Suggested increase</p><p class="mt-1 text-lg font-black text-white">${currentWeight ? (currentWeight >= 100 ? '5 lb' : '2.5 lb') : '—'}</p></div>
+          </div>
+          <svg viewBox="0 0 320 110" class="mt-4 w-full">
+            <line x1="20" y1="90" x2="300" y2="90" stroke="#334155" stroke-width="2" />
+            <line x1="20" y1="20" x2="20" y2="90" stroke="#334155" stroke-width="2" />
+            ${completed.slice(-6).map((entry, index) => `
+              <circle cx="${40 + index * 48}" cy="${90 - Math.max(10, entry.weight / 4)}" r="5" fill="#3b82f6" />`).join('')}
+            ${completed.slice(-6).map((entry, index) => index > 0 ? `<line x1="${40 + (index - 1) * 48}" y1="${90 - Math.max(10, completed[index - 1].weight / 4)}" x2="${40 + index * 48}" y2="${90 - Math.max(10, entry.weight / 4)}" stroke="#60a5fa" stroke-width="2" />` : '').join('')}
+          </svg>
+        </div>`;
+    }
+
+    function renderRecovery() {
+      const panel = document.getElementById('recovery-panel');
+      panel.innerHTML = `
+        <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-black text-white">Recovery score</p>
+              <p class="text-3xl font-black text-emerald-300">${state.recovery.recoveryPercent}%</p>
+            </div>
+            <div class="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm font-semibold text-emerald-300">${state.recovery.restDays} rest days</div>
+          </div>
+          <div class="mt-4 space-y-3">
+            <div class="flex items-center justify-between text-sm text-slate-300"><span>Sleep target</span><span>${state.recovery.sleepTarget}h</span></div>
+            <div class="flex items-center justify-between text-sm text-slate-300"><span>Hydration</span><span>${state.recovery.hydration}%</span></div>
+            <div class="flex items-center justify-between text-sm text-slate-300"><span>Fatigue level</span><span>${state.recovery.fatigue}/5</span></div>
+          </div>
+          <div class="mt-4 rounded-2xl border border-slate-800 bg-slate-900/70 p-3 text-sm text-slate-400">
+            <span class="font-semibold text-white">Recommendation:</span> ${state.recovery.nextRecommendation}
+          </div>
+        </div>`;
+    }
+
+    function renderMuscleMapPanel() {
+      const today = getTodayWorkout();
+      const activeMuscles = new Set();
+      (today?.exercises || []).forEach((exercise) => {
+        exercise.primary.forEach((muscle) => {
+          if (muscle.toLowerCase().includes('chest')) activeMuscles.add('Chest');
+          if (muscle.toLowerCase().includes('back') || muscle.toLowerCase().includes('lat')) activeMuscles.add('Back');
+          if (muscle.toLowerCase().includes('shoulder') || muscle.toLowerCase().includes('delts')) activeMuscles.add('Shoulders');
+          if (muscle.toLowerCase().includes('quad') || muscle.toLowerCase().includes('glute') || muscle.toLowerCase().includes('hamstring') || muscle.toLowerCase().includes('calf')) activeMuscles.add('Legs');
+          if (muscle.toLowerCase().includes('arm') || muscle.toLowerCase().includes('bicep') || muscle.toLowerCase().includes('tricep')) activeMuscles.add('Arms');
+          if (muscle.toLowerCase().includes('core') || muscle.toLowerCase().includes('oblique')) activeMuscles.add('Core');
+        });
+      });
+      const front = ['Chest', 'Shoulders', 'Legs', 'Arms', 'Core'];
+      const back = ['Back', 'Legs', 'Shoulders', 'Arms'];
+      const panel = document.getElementById('muscle-map-panel');
+      panel.innerHTML = `
+        <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+          <div class="flex items-center justify-between gap-2">
+            <h4 class="text-sm font-black uppercase tracking-[0.3em] text-slate-400">Muscle map</h4>
+            <div class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1 text-xs font-semibold text-slate-400">Today’s focus</div>
+          </div>
+          <svg viewBox="0 0 320 220" class="mt-4 w-full">
+            <rect x="20" y="20" width="130" height="180" rx="24" fill="#0f172a" stroke="#334155" stroke-width="2" />
+            <rect x="170" y="20" width="130" height="180" rx="24" fill="#0f172a" stroke="#334155" stroke-width="2" />
+            <path d="M75 62c16-18 34-18 50 0l7 8c4 5 4 12 0 17l-8 9c-10 12-28 12-38 0l-8-9c-4-5-4-12 0-17l8-8z" fill="#1e293b" />
+            <path d="M230 62c16-18 34-18 50 0l7 8c4 5 4 12 0 17l-8 9c-10 12-28 12-38 0l-8-9c-4-5-4-12 0-17l8-8z" fill="#1e293b" />
+            <path d="M77 92c12-20 46-20 58 0l8 15c4 8 4 17 0 25l-8 15c-12 20-46 20-58 0l-8-15c-4-8-4-17 0-25l8-15z" fill="#1e293b" />
+            <path d="M230 92c12-20 46-20 58 0l8 15c4 8 4 17 0 25l-8 15c-12 20-46 20-58 0l-8-15c-4-8-4-17 0-25l8-15z" fill="#1e293b" />
+            <path d="M88 104c8-6 18-8 28-8 12 0 22 3 28 8" stroke="#f8fafc" stroke-width="4" stroke-linecap="round" />
+            ${front.map((muscle) => activeMuscles.has(muscle) ? `<circle cx="${muscle === 'Chest' ? 92 : muscle === 'Shoulders' ? 105 : muscle === 'Arms' ? 72 : muscle === 'Core' ? 108 : 110}" cy="${muscle === 'Chest' ? 86 : muscle === 'Shoulders' ? 54 : muscle === 'Arms' ? 112 : muscle === 'Core' ? 108 : 132}" r="10" fill="#3b82f6" opacity="0.9" />` : '').join('')}
+            ${back.map((muscle) => activeMuscles.has(muscle) ? `<circle cx="${muscle === 'Back' ? 250 : muscle === 'Shoulders' ? 265 : muscle === 'Arms' ? 228 : 242}" cy="${muscle === 'Back' ? 84 : muscle === 'Shoulders' ? 58 : muscle === 'Arms' ? 115 : 132}" r="10" fill="#38bdf8" opacity="0.9" />` : '').join('')}
+          </svg>
+          <div class="mt-3 flex flex-wrap gap-2">
+            ${[...activeMuscles].slice(0, 6).map((muscle) => `<span class="rounded-full border border-blue-500/20 bg-blue-500/10 px-2.5 py-1 text-[11px] font-semibold text-blue-300">${muscle}</span>`).join('')}
+          </div>
+        </div>`;
+    }
+
+    function renderNutrition() {
+      const nutrition = state.nutrition;
+      const proteinGoal = Math.round(nutrition.weight * 1.1);
+      const calorieGoal = nutrition.goal === 'bulking' ? Math.round(nutrition.weight * 16) : nutrition.goal === 'cutting' ? Math.round(nutrition.weight * 13) : Math.round(nutrition.weight * 14.5);
+      const macros = { protein: Math.round(calorieGoal * 0.3 / 4), carbs: Math.round(calorieGoal * 0.45 / 4), fats: Math.round(calorieGoal * 0.25 / 9) };
+      state.nutrition.protein = proteinGoal;
+      state.nutrition.calories = calorieGoal;
+      state.nutrition.macros = macros;
+
+      const panel = document.getElementById('nutrition-panel');
+      panel.innerHTML = `
+        <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+          <div class="flex flex-wrap gap-2">
+            ${['bulking', 'cutting', 'maintenance'].map((goal) => `<button onclick="setNutritionGoal('${goal}')" class="rounded-full border ${nutrition.goal === goal ? 'border-blue-500 bg-blue-500/15 text-blue-200' : 'border-slate-700 bg-slate-900/70 text-slate-400'} px-3 py-2 text-sm font-semibold">${goal.charAt(0).toUpperCase() + goal.slice(1)}</button>`).join('')}
+          </div>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-3">
+              <p class="text-[11px] uppercase tracking-[0.28em] text-slate-400">Daily protein</p>
+              <p class="mt-1 text-2xl font-black text-white">${proteinGoal}g</p>
+            </div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-3">
+              <p class="text-[11px] uppercase tracking-[0.28em] text-slate-400">Calories</p>
+              <p class="mt-1 text-2xl font-black text-white">${calorieGoal}</p>
+            </div>
+          </div>
+          <div class="mt-4 rounded-2xl border border-slate-800 bg-slate-900/70 p-3">
+            <div class="grid gap-3 sm:grid-cols-3">
+              <div><p class="text-xs text-slate-400">Protein</p><p class="mt-1 text-lg font-black text-white">${macros.protein}g</p></div>
+              <div><p class="text-xs text-slate-400">Carbs</p><p class="mt-1 text-lg font-black text-white">${macros.carbs}g</p></div>
+              <div><p class="text-xs text-slate-400">Fats</p><p class="mt-1 text-lg font-black text-white">${macros.fats}g</p></div>
+            </div>
+          </div>
+          <div class="mt-4 rounded-2xl border border-slate-800 bg-slate-900/70 p-3 text-sm text-slate-400">
+            <span class="font-semibold text-white">Timing suggestion:</span> Eat protein in the first meal of the day, have carbs around training, and keep a late-night protein snack if appetite is lower.
+          </div>
+        </div>`;
+    }
+
+    function renderTools() {
+      const panel = document.getElementById('tools-panel');
+      const restSeconds = state.timer.restSeconds;
+      panel.innerHTML = `
+        <div class="grid gap-4 lg:grid-cols-[1fr_1fr]">
+          <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-black text-white">Rest timer</p>
+                <p class="text-3xl font-black text-cyan-300" id="timer-display">${restSeconds}s</p>
+              </div>
+              <div class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1 text-xs font-semibold text-slate-400">${state.settings.sound ? 'Sound on' : 'Muted'}</div>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+              ${[30, 45, 60, 90, 120, 180].map((value) => `<button onclick="setRestTimer(${value})" class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-2 text-sm font-semibold text-slate-300">${value}s</button>`).join('')}
+            </div>
+            <div class="mt-3 flex gap-2">
+              <button onclick="setTimerMode('rest')" class="rounded-2xl border ${state.timer.mode === 'rest' ? 'border-blue-500 bg-blue-500/15 text-blue-200' : 'border-slate-700 bg-slate-900/70 text-slate-300'} px-3 py-2 text-sm font-semibold">Rest</button>
+              <button onclick="setTimerMode('workout')" class="rounded-2xl border ${state.timer.mode === 'workout' ? 'border-emerald-500 bg-emerald-500/15 text-emerald-200' : 'border-slate-700 bg-slate-900/70 text-slate-300'} px-3 py-2 text-sm font-semibold">Workout</button>
+            </div>
+            <div class="mt-3 flex gap-2">
+              <button onclick="startTimer()" class="flex-1 rounded-2xl bg-blue-600 px-3 py-2 text-sm font-semibold text-white">Start</button>
+              <button onclick="pauseTimer()" class="rounded-2xl border border-slate-700 bg-slate-900/70 px-3 py-2 text-sm font-semibold text-slate-300">Pause</button>
+              <button onclick="resetTimer()" class="rounded-2xl border border-slate-700 bg-slate-900/70 px-3 py-2 text-sm font-semibold text-slate-300">Reset</button>
+            </div>
+            <div class="mt-3">
+              <input id="custom-timer" type="number" min="5" max="600" value="${restSeconds}" class="w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-300" />
+              <button onclick="setCustomTimer()" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-900/70 px-3 py-2 text-sm font-semibold text-slate-300">Set custom</button>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+              <p class="text-sm font-black text-white">Plate calculator</p>
+              <div class="mt-3 space-y-2">
+                <input id="barbell-weight" type="number" value="45" class="w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-300" />
+                <input id="target-weight" type="number" value="135" class="w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-300" />
+                <button onclick="calculatePlates()" class="w-full rounded-2xl bg-blue-600 px-3 py-2 text-sm font-semibold text-white">Calculate plates</button>
+                <p id="plate-result" class="text-sm text-slate-400"></p>
+              </div>
+            </div>
+            <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4">
+              <p class="text-sm font-black text-white">1RM estimator</p>
+              <div class="mt-3 space-y-2">
+                <input id="rm-weight" type="number" value="225" class="w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-300" />
+                <input id="rm-reps" type="number" value="5" class="w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-300" />
+                <button onclick="calculateOneRepMax()" class="w-full rounded-2xl bg-blue-600 px-3 py-2 text-sm font-semibold text-white">Estimate</button>
+                <p id="rm-result" class="text-sm text-slate-400"></p>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderRecords() {
+      const panel = document.getElementById('records-panel');
+      const entries = [
+        { key: 'bench', label: 'Bench Press' },
+        { key: 'squat', label: 'Squat' },
+        { key: 'deadlift', label: 'Deadlift' },
+        { key: 'ohp', label: 'Overhead Press' },
+        { key: 'rows', label: 'Rows' },
+        { key: 'pullUps', label: 'Pull Ups' }
+      ];
+      panel.innerHTML = entries.map((entry) => `
+        <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-3">
+          <div class="flex items-center justify-between gap-3">
+            <p class="text-sm font-semibold text-white">${entry.label}</p>
+            <input value="${state.prs[entry.key]}" oninput="updatePR('${entry.key}', this.value)" class="w-24 rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200" />
+          </div>
+        </div>`).join('');
+    }
+
+    function renderSettings() {
+      const panel = document.getElementById('settings-panel');
+      panel.innerHTML = `
+        <div class="grid gap-3">
+          <label class="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-950/70 px-3 py-3 text-sm text-slate-300"><span>Theme</span><button onclick="toggleTheme()" class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-2 text-xs font-semibold">${state.settings.theme === 'dark' ? 'Dark' : 'Light'}</button></label>
+          <label class="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-950/70 px-3 py-3 text-sm text-slate-300"><span>Units</span><button onclick="toggleUnits()" class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-2 text-xs font-semibold">${state.settings.units.toUpperCase()}</button></label>
+          <label class="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-950/70 px-3 py-3 text-sm text-slate-300"><span>Sound toggle</span><button onclick="toggleSound()" class="rounded-full border ${state.settings.sound ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300' : 'border-slate-700 bg-slate-900/70 text-slate-400'} px-3 py-2 text-xs font-semibold">${state.settings.sound ? 'On' : 'Off'}</button></label>
+          <label class="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-950/70 px-3 py-3 text-sm text-slate-300"><span>Animations</span><button onclick="toggleAnimations()" class="rounded-full border ${state.settings.animations ? 'border-blue-500/20 bg-blue-500/10 text-blue-300' : 'border-slate-700 bg-slate-900/70 text-slate-400'} px-3 py-2 text-xs font-semibold">${state.settings.animations ? 'On' : 'Off'}</button></label>
+          <div class="flex gap-2">
+            <button onclick="exportData()" class="flex-1 rounded-2xl border border-slate-700 bg-slate-900/70 px-3 py-2 text-sm font-semibold text-slate-300">Export</button>
+            <label class="flex-1 cursor-pointer rounded-2xl border border-slate-700 bg-slate-900/70 px-3 py-2 text-center text-sm font-semibold text-slate-300"><input id="import-file" type="file" class="hidden" onchange="importData(event)" />Import</label>
+            <button onclick="resetAllData()" class="flex-1 rounded-2xl border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-sm font-semibold text-rose-300">Reset</button>
+          </div>
+        </div>`;
+    }
+
+    function toggleDay(day) {
+      const index = state.selectedDays.indexOf(day);
+      if (index >= 0) {
+        state.selectedDays.splice(index, 1);
+      } else {
+        state.selectedDays.push(day);
+      }
+      state.selectedDays.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
+      saveState();
+      renderApp();
+    }
+
+    function toggleFavoritesOnly() {
+      const button = document.getElementById('favorite-toggle');
+      const active = button?.dataset.active === 'true';
+      button.dataset.active = (!active).toString();
+      renderExerciseLibrary();
+    }
+
+    function toggleSplit(event) {
+      state.splitType = event.target.value;
+      saveState();
+      renderApp();
+    }
+
+    document.getElementById('split-selector').addEventListener('change', toggleSplit);
+    document.getElementById('exercise-search').addEventListener('input', renderExerciseLibrary);
+    document.getElementById('filter-muscle').addEventListener('change', renderExerciseLibrary);
+    document.getElementById('filter-equipment').addEventListener('change', renderExerciseLibrary);
+    document.getElementById('filter-difficulty').addEventListener('change', renderExerciseLibrary);
+    document.getElementById('favorite-toggle').addEventListener('click', toggleFavoritesOnly);
+
+    function openExerciseModal(exerciseName) {
+      const exercise = exerciseLibrary.find((entry) => entry.name === exerciseName) || exerciseLibrary[0];
+      document.getElementById('modal-title').textContent = exercise.name;
+      document.getElementById('modal-category').textContent = `${exercise.primary.join(' · ')} · ${exercise.movement}`;
+      document.getElementById('modal-sets').textContent = `${exercise.sets} · ${exercise.reps}`;
+      document.getElementById('modal-rest').textContent = exercise.rest;
+      document.getElementById('modal-tempo').textContent = exercise.tempo;
+      document.getElementById('modal-muscles').innerHTML = [exercise.primary, exercise.secondary].flat().map((muscle) => `<span class="rounded-full border border-blue-500/20 bg-blue-500/10 px-2.5 py-1 text-[11px] font-semibold text-blue-300">${muscle}</span>`).join('');
+      document.getElementById('modal-steps').innerHTML = exercise.instructions.split('.').filter(Boolean).slice(0, 4).map((step) => `<li class="rounded-2xl border border-slate-800 bg-slate-900/70 px-3 py-2">${step.trim()}.</li>`).join('');
+      document.getElementById('modal-cues').textContent = `${exercise.instructions}`;
+      document.getElementById('modal-mistake').textContent = exercise.mistakes;
+      document.getElementById('modal-safety').textContent = exercise.safetyTips;
+      document.getElementById('modal-progression').textContent = exercise.progression;
+      document.getElementById('modal-illustration').innerHTML = svgIllustrations[exercise.svgKey] || svgIllustrations.squat;
+      document.getElementById('exercise-modal').classList.remove('hidden');
+      document.getElementById('exercise-modal').classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    document.getElementById('modal-close').addEventListener('click', closeExerciseModal);
+    document.getElementById('exercise-modal').addEventListener('click', (event) => {
+      if (event.target.id === 'exercise-modal') closeExerciseModal();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeExerciseModal();
+    });
+
+    function closeExerciseModal() {
+      document.getElementById('exercise-modal').classList.add('hidden');
+      document.getElementById('exercise-modal').classList.remove('flex');
+      document.body.style.overflow = 'auto';
+    }
+
+    function toggleFavorite(exerciseName) {
+      if (state.favorites.includes(exerciseName)) {
+        state.favorites = state.favorites.filter((item) => item !== exerciseName);
+      } else {
+        state.favorites.push(exerciseName);
+      }
+      saveState();
+      renderExerciseLibrary();
+    }
+
+    function updateLog(day, exerciseName, field, value) {
+      ensureLog(day, exerciseName);
+      state.logs[day][exerciseName][field] = value;
+      saveState();
+      renderLogPanel();
+    }
+
+    function toggleExerciseComplete(day, exerciseName, completed) {
+      ensureLog(day, exerciseName);
+      state.logs[day][exerciseName].completed = completed;
+      saveState();
+      renderLogPanel();
+      if (completed) {
+        state.completedWorkouts.push({ day, exerciseName, timestamp: new Date().toISOString() });
+        saveState();
+      }
+    }
+
+    function markDayComplete(day) {
+      state.completedWorkouts.push({ day, timestamp: new Date().toISOString() });
+      saveState();
+      renderApp();
+    }
+
+    function markTodayComplete() {
+      const today = getTodayLabel();
+      markDayComplete(today);
+    }
+
+    function updatePR(key, value) {
+      state.prs[key] = Number(value) || 0;
+      saveState();
+      renderRecords();
+    }
+
+    function setNutritionGoal(goal) {
+      state.nutrition.goal = goal;
+      saveState();
+      renderNutrition();
+    }
+
+    function toggleTheme() {
+      state.settings.theme = state.settings.theme === 'dark' ? 'light' : 'dark';
+      saveState();
+      renderApp();
+    }
+
+    function toggleUnits() {
+      state.settings.units = state.settings.units === 'lb' ? 'kg' : 'lb';
+      saveState();
+      renderApp();
+    }
+
+    function toggleSound() {
+      state.settings.sound = !state.settings.sound;
+      saveState();
+      renderApp();
+    }
+
+    function toggleAnimations() {
+      state.settings.animations = !state.settings.animations;
+      saveState();
+      renderApp();
+    }
+
+    function exportData() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = 'flexsched-export.json';
+      anchor.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      state = mergeState(parsed);
+      saveState();
+      renderApp();
+    }
+
+    function resetAllData() {
+      if (confirm('Reset all planner data?')) {
+        state = structuredClone(defaultState);
+        saveState();
+        renderApp();
+      }
+    }
+
+    function setRestTimer(seconds) {
+      state.timer.restSeconds = seconds;
+      state.timer.mode = 'rest';
+      saveState();
+      renderTools();
+      document.getElementById('timer-display').textContent = `${seconds}s`;
+    }
+
+    function setTimerMode(mode) {
+      state.timer.mode = mode;
+      if (mode === 'workout') {
+        state.timer.workoutSeconds = state.timer.workoutSeconds || 0;
+      }
+      saveState();
+      renderTools();
+    }
+
+    function setCustomTimer() {
+      const value = Number(document.getElementById('custom-timer').value || 60);
+      state.timer.restSeconds = value;
+      saveState();
+      renderTools();
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      state.timer.running = true;
+      saveState();
+      timerInterval = setInterval(() => {
+        if (!state.timer.running) {
+          stopTimer();
+          return;
+        }
+        if (state.timer.mode === 'workout') {
+          state.timer.workoutSeconds += 1;
+          document.getElementById('timer-display').textContent = `${state.timer.workoutSeconds}s`;
+        } else {
+          state.timer.restSeconds = Math.max(0, state.timer.restSeconds - 1);
+          document.getElementById('timer-display').textContent = `${state.timer.restSeconds}s`;
+          if (state.timer.restSeconds <= 0) {
+            stopTimer();
+            state.timer.running = false;
+            if (state.settings.sound) playBeep();
+            renderTools();
+          }
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      state.timer.running = false;
+      stopTimer();
+      saveState();
+      renderTools();
+    }
+
+    function resetTimer() {
+      stopTimer();
+      state.timer.running = false;
+      if (state.timer.mode === 'workout') {
+        state.timer.workoutSeconds = 0;
+      } else {
+        state.timer.restSeconds = state.settings.restTimerDefault || 60;
+      }
+      saveState();
+      renderTools();
+    }
+
+    function playBeep() {
+      const context = new AudioContext();
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(880, context.currentTime);
+      gain.gain.setValueAtTime(0.12, context.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.2);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start();
+      oscillator.stop(context.currentTime + 0.2);
+    }
+
+    function calculatePlates() {
+      const barbell = Number(document.getElementById('barbell-weight').value || 45);
+      const total = Number(document.getElementById('target-weight').value || 135);
+      const load = total - barbell;
+      const plates = [45, 35, 25, 10, 5, 2.5];
+      const result = [];
+      let remaining = load / 2;
+      plates.forEach((plate) => {
+        const count = Math.floor(remaining / plate);
+        if (count > 0) {
+          result.push(`${count} × ${plate} lb`);
+          remaining -= count * plate;
+        }
+      });
+      document.getElementById('plate-result').textContent = load > 0 ? `Per side: ${result.join(', ')}. Remaining: ${remaining.toFixed(1)} lb.` : 'Target weight must exceed the barbell weight.';
+    }
+
+    function calculateOneRepMax() {
+      const weight = Number(document.getElementById('rm-weight').value || 0);
+      const reps = Number(document.getElementById('rm-reps').value || 0);
+      const epley = weight * (1 + reps / 30);
+      const brzycki = weight * 36 / (37 - reps);
+      const result = `1RM ≈ ${Math.round(epley)} lb · 3RM ≈ ${Math.round(epley * 0.92)} lb · 5RM ≈ ${Math.round(epley * 0.87)} lb`;
+      document.getElementById('rm-result').textContent = result;
+    }
+
+    function quickLog(exerciseName) {
+      const today = getTodayLabel();
+      ensureLog(today, exerciseName);
+      state.logs[today][exerciseName].completed = true;
+      saveState();
+      renderLogPanel();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderApp();
+    });
+  </script>
+</body>
+</html>
